@@ -1,11 +1,24 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Semver'
+description: 'An action for managing releases using semantic versioning.\n
+  This is based on '
 inputs:
-  milliseconds: # change this
+  bump:  # Bump the version number semantically.
+    description: 'Bump the version number semantically. The value must be one of: \n
+      major: Bump the major version number, e.g. 1.0.0 -> 2.0.0.\n
+      minor: Bump the minor version number, e.g. 0.1.0 -> 0.2.0.\n
+      patch: Bump the patch version number, e.g. 0.0.1 -> 0.0.2.\n
+      final: Promote the version to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    default: 'minor'
+  pre: # 
+    description: ''
+    required: false
+  initial_version:
+    description: 'If there is no current version, the bump will be based on initial_version or 1.0.0'
+    required: false
+outputs:
+  release: # output will be available to future steps
+    description: 'The release that was created'
 runs:
   using: 'node12'
   main: 'dist/index.js'
