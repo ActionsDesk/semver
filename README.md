@@ -32,10 +32,10 @@ Run the tests :heavy_check_mark:
 ```bash
 $ npm test
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+ PASS  __tests__/main.test.ts
+  ✓ throws invalid number (7 ms)
+  ✓ wait 500 ms (505 ms)
+  ✓ test runs (97 ms)
 
 ...
 ```

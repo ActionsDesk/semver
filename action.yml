@@ -2,6 +2,10 @@ name: 'Semver'
 description: 'An action for managing releases using semantic versioning.\n
   This is based on '
 inputs:
+  github_token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ secrets.GITHUB_TOKEN }}
+    required: false
   bump:  # Bump the version number semantically.
     description: 'Bump the version number semantically. The value must be one of: \n
       major: Bump the major version number, e.g. 1.0.0 -> 2.0.0.\n

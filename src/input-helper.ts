@@ -21,7 +21,7 @@ export function getInputs(): SemverInputs {
   const inputs = {
     bump,
     pre,
-    initialVersion
+    initialVersion: initialVersion ? initialVersion : 'v1.0.0'
   } as SemverInputs
 
   /**
