@@ -1,3 +1,100 @@
+# semver action
+
+This is a **GitHub Action**  for managing a version numbers using the Github release tag_name as a store for the version number.  
+This is inspired by [Concourse Semver resource](https://github.com/concourse/semver-resource)
+
+## Table of Contents
+
+- [semver action](#semver-action)
+  - [Table of Contents](#table-of-contents)
+  - [How it Works](#how-it-works)
+  - [How to use](#how-to-use)
+    - [Example connecting GitHub Action Workflow](#example-connecting-github-action-workflow)
+  - [Limitations](#limitations)
+  - [How to contribute](#how-to-contribute)
+    - [License](#license)
+- [Create a JavaScript Action using TypeScript](#create-a-javascript-action-using-typescript)
+  - [Create an action from this template](#create-an-action-from-this-template)
+  - [Code in Main](#code-in-main)
+  - [Change action.yml](#change-actionyml)
+  - [Change the Code](#change-the-code)
+  - [Publish to a distribution branch](#publish-to-a-distribution-branch)
+  - [Validate](#validate)
+  - [Usage:](#usage)
+
+## How it Works
+
+The action takes the following inputs:
+
+- **bump**: Bump the version number semantically. 
+  - **required**: true
+  - **default**: 'minor'
+  The value must be one of: 
+  - *major*: Bump the major version number, e.g. 1.0.0 -> 2.0.0.
+  - *minor*: Bump the minor version number, e.g. 0.1.0 -> 0.2.0.
+  - *patch*: Bump the patch version number, e.g. 0.0.1 -> 0.0.2.
+  - *final*: Promote the version to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.'
+
+- **pre**: Value can be any string. Indicates this is a pre-release. When bumping, bump to a prerelease (e.g. `rc` or `alpha`), or bump an existing prerelease.
+  - ​**required**: false
+
+- **initial_version**: If there is no current version, the bump will be based on initial_version or 0.0.1
+  - **required**: false
+  - **default**: 0.0.1
+
+## How to use
+
+To use this **GitHub** Action you will need to complete the following:
+
+1. Add the task in your workflow where you see fit. You can use the example below as a reference.
+1. Modify the example to pass the correct values for `bump`. Values for `pre`, `initial_version` are optional.
+
+### Example connecting GitHub Action Workflow
+
+In your repository you should have a `.github/workflows` folder with **GitHub** Action similar to below:
+
+- `.github/workflows/test.yml`
+
+This file should look like the following:
+
+```yml
+---
+name: "sample-workflow"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: decyjphr-actions/repository-dispatch
+      with:
+        workflow: dispatch-test.yml
+        token: ${{secrets.pat}}
+        ref: main
+        inputs: '{"status":"passed"}'
+```
+
+
+## Limitations
+
+
+## How to contribute
+
+If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/decyjphr-actions/workflow-dispatch/blob/master/.github/CONTRIBUTING.md)
+
+---
+
+### License
+
+- [MIT License](https://github.com/decyjphr-actions/workflow-dispatch/blob/master/LICENSE)
+
+
 <p align="center">
   <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
 </p>
