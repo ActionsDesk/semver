@@ -9,8 +9,8 @@ export function getInputs(): SemverInputs {
   const bump = core.getInput(Inputs.Bump, {required: true})
   const pre = core.getInput(Inputs.Pre)
   const initialVersion = core.getInput(Inputs.InitialVersion)
-
-  if (pre == null) {
+  core.debug(`Initial version ${initialVersion}`)
+  if (bump == null) {
     core.setFailed(
       `Testing ${
         Inputs.Pre
@@ -21,7 +21,7 @@ export function getInputs(): SemverInputs {
   const inputs = {
     bump,
     pre,
-    initialVersion: initialVersion ? initialVersion : 'v1.0.0'
+    initialVersion: initialVersion ? initialVersion : '1.0.0'
   } as SemverInputs
 
   /**

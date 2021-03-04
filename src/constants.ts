@@ -1,7 +1,7 @@
 export enum Inputs {
   Bump = 'bump',
   Pre = 'pre',
-  InitialVersion = 'initial-version'
+  InitialVersion = 'initial_version'
 }
 
 export enum Outputs {

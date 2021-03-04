@@ -13,7 +13,7 @@ var Inputs;
 (function (Inputs) {
     Inputs["Bump"] = "bump";
     Inputs["Pre"] = "pre";
-    Inputs["InitialVersion"] = "initial-version";
+    Inputs["InitialVersion"] = "initial_version";
 })(Inputs = exports.Inputs || (exports.Inputs = {}));
 var Outputs;
 (function (Outputs) {
@@ -65,13 +65,14 @@ function getInputs() {
     const bump = core.getInput(constants_1.Inputs.Bump, { required: true });
     const pre = core.getInput(constants_1.Inputs.Pre);
     const initialVersion = core.getInput(constants_1.Inputs.InitialVersion);
-    if (pre == null) {
+    core.debug(`Initial version ${initialVersion}`);
+    if (bump == null) {
         core.setFailed(`Testing ${constants_1.Inputs.Pre} input. Provided: ${pre}. Available options: ${Object.keys(constants_1.Bumps)}`);
     }
     const inputs = {
         bump,
         pre,
-        initialVersion: initialVersion ? initialVersion : 'v1.0.0'
+        initialVersion: initialVersion ? initialVersion : '1.0.0'
     };
     /**
      * const retentionDaysStr = core.getInput(Inputs.RetentionDays)
@@ -126,9 +127,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__webpack_require__(186));
 const github = __importStar(__webpack_require__(438));
 const inputHelper = __importStar(__webpack_require__(480));
+const constants_1 = __webpack_require__(105);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            let isFirstRelease = false;
             const semverInputs = inputHelper.getInputs();
             core.debug(`Bump ${semverInputs.bump}`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
             core.debug(`Pre ${semverInputs.pre}`);
@@ -149,19 +152,46 @@ function run() {
             }
             catch (e) {
                 if (e.status === 404) {
-                    core.debug(`No releases found for  {org: ${github.context.repo.repo}, repo: ${github.context.repo.repo}`);
+                    isFirstRelease = true;
+                    core.debug(`No releases found for org: ${github.context.repo.owner}, repo: ${github.context.repo.repo}; using default version ${semverInputs.initialVersion}`);
                     release = {
                         data: {
-                            tag_name: 'v1.0.0'
+                            tag_name: semverInputs.initialVersion
                         }
                     };
                 }
             }
+            let newTag = semverInputs.initialVersion;
+            if (!isFirstRelease) {
+                const parts = release.data.tag_name.split('.').map(s => parseInt(s));
+                core.debug(`Parts are ${parts}`);
+                switch (semverInputs.bump) {
+                    case constants_1.Bumps.major:
+                        ++parts[0];
+                        parts[1] = 0;
+                        parts[2] = 0;
+                        break;
+                    case constants_1.Bumps.minor:
+                        ++parts[1];
+                        parts[2] = 0;
+                        break;
+                    case constants_1.Bumps.patch:
+                        ++parts[2];
+                        break;
+                    default:
+                        throw new Error(`Invalid Bump ${semverInputs.bump}`);
+                }
+                newTag = parts.join('.');
+            }
+            release = yield octokit.repos.createRelease({
+                repo: github.context.repo.repo,
+                owner: github.context.repo.owner,
+                tag_name: newTag
+            });
+            core.debug(release.data.tag_name);
             core.setOutput('release', release.data.tag_name);
         }
         catch (error) {
-            // eslint-disable-next-line no-console
-            console.log(error.message);
             core.setFailed(error.message);
         }
     });
