@@ -53,7 +53,6 @@ async function run(): Promise<void> {
       tag_name: newTag
     })
     core.debug(release.data.tag_name)
-
     core.setOutput('release', release.data.tag_name)
   } catch (error) {
     core.setFailed(error.message)
