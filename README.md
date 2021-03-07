@@ -75,7 +75,7 @@ jobs:
 ## Limitations
 
 - When creating a pre-release it does not use the `pre-release` setting in GitHub. This would be fixed later.
-- It does not create a pre-release without a `build number`. For e.g. `0.1.0` would be bumped to `0.1.0-alpha.1` but not to `0.1.0-alpha`.
+- It does not create a pre-release without a `build number`. For e.g. `0.1.0` would be bumped to `0.1.0-alpha.1` but not to `0.1.0-alpha`.  
 
 ## How to contribute
 

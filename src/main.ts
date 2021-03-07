@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as inputHelper from './input-helper'
-import {Semver} from './Semver'
+import {Semver} from './semver'
 
 async function run(): Promise<void> {
   try {
@@ -47,11 +47,11 @@ async function run(): Promise<void> {
     core.debug(`Semver is ${semver}`)
     const newTag = semver.getNextVersion()
     core.debug(`new tag = ${newTag}`)
-    // release = await octokit.repos.createRelease({
-    //   repo: github.context.repo.repo,
-    //   owner: github.context.repo.owner,
-    //   tag_name: newTag
-    // })
+    release = await octokit.repos.createRelease({
+      repo: github.context.repo.repo,
+      owner: github.context.repo.owner,
+      tag_name: newTag
+    })
     core.debug(release.data.tag_name)
 
     core.setOutput('release', release.data.tag_name)
