@@ -24,6 +24,16 @@ test('wait 500 ms', async () => {
   expect(delta).toBeGreaterThan(450)
 })
 
+test('Semver 0.1.0 bump=pre firstRelease test', () => {
+  const semver = new Semver('0.1.0', true, Bumps.pre)
+  expect(semver.getNextVersion()).toBe('0.1.0-alpha.1')
+})
+
+test('Semver 0.1.0 bump=pre firstRelease test', () => {
+  const semver = new Semver('0.1.0', true, Bumps.major)
+  expect(semver.getNextVersion()).toBe('0.1.0')
+})
+
 test('Semver 1.0.0 bump=major test', () => {
   const semver = new Semver('1.0.0', false, Bumps.major)
   expect(semver.getNextVersion()).toBe('2.0.0')
