@@ -11,14 +11,15 @@ inputs:
       major: Bump the major version number, e.g. 1.0.0 -> 2.0.0.\n
       minor: Bump the minor version number, e.g. 0.1.0 -> 0.2.0.\n
       patch: Bump the patch version number, e.g. 0.0.1 -> 0.0.2.\n
+      pre: Use labels for pre-release and build number e.g. 0.0.1 -> 0.0.2-<label>.<build>\n
       final: Promote the version to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.'
     required: true
     default: 'minor'
-  pre: # 
-    description: ''
+  prelabel: # 
+    description: 'Label to be applied for the pre-release'
     required: false
   initial_version:
-    description: 'If there is no current version, the bump will be based on initial_version or 1.0.0'
+    description: 'If there is no current version, the bump will be based on initial_version or 0.1.0'
     required: false
 outputs:
   release: # output will be available to future steps

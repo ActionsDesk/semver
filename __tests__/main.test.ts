@@ -2,7 +2,9 @@ import {wait} from '../src/wait'
 import * as process from 'process'
 import * as cp from 'child_process'
 import * as path from 'path'
-import { type } from 'os'
+import {type} from 'os'
+import {Semver} from '../src/semver'
+import {Bumps} from '../src/constants'
 
 beforeAll(() => {
   process.env['INPUT_GITHUB_TOKEN'] = 'xxx'
@@ -22,11 +24,37 @@ test('wait 500 ms', async () => {
   expect(delta).toBeGreaterThan(450)
 })
 
+test('Semver 1.0.0 bump=major test', () => {
+  const semver = new Semver('1.0.0', false, Bumps.major)
+  expect(semver.getNextVersion()).toBe('2.0.0')
+})
+
+test('Semver 1.0.0 bump=minor test', () => {
+  const semver = new Semver('1.0.0', false, Bumps.minor)
+  expect(semver.getNextVersion()).toBe('1.1.0')
+})
+
+test('Semver 1.0.0 bump=patch test', () => {
+  const semver = new Semver('1.0.0', false, Bumps.patch)
+  expect(semver.getNextVersion()).toBe('1.0.1')
+})
+
+test('Semver 1.2.3-beta bump=pre label=beta test', () => {
+  const semver = new Semver('1.2.3-alpha', false, Bumps.pre, 'beta')
+  expect(semver.getNextVersion()).toBe('1.2.3-beta.1')
+})
+
+test('Semver 1.2.3 bump=pre test', () => {
+  const semver = new Semver('1.2.3', false, Bumps.pre)
+  expect(semver.getNextVersion()).toBe('1.2.3-alpha.1')
+})
+
+/*
 // shows how the runner will run a javascript action with env / stdout protocol
 test('test bump major', () => {
   process.env['INPUT_BUMP'] = 'major'
   process.env['INPUT_INITIAL_VERSION'] = '0.0.1'
-  
+
   const np = process.execPath
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   try {
@@ -34,16 +62,16 @@ test('test bump major', () => {
       env: process.env
     }
     console.log(cp.execFileSync(np, [ip], options).toString())
-  } catch(err) {
+  } catch (err) {
     expect(err).toBeInstanceOf(Error)
   }
-
 })
+
 
 test('test bump minor', () => {
   process.env['INPUT_BUMP'] = 'minor'
   process.env['INPUT_INITIAL_VERSION'] = '0.1.1'
-  
+
   const np = process.execPath
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   try {
@@ -51,10 +79,9 @@ test('test bump minor', () => {
       env: process.env
     }
     console.log(cp.execFileSync(np, [ip], options).toString())
-  } catch(err) {
+  } catch (err) {
     expect(err).toBeInstanceOf(Error)
   }
-
 })
 
 test('test bump patch', () => {
@@ -67,10 +94,9 @@ test('test bump patch', () => {
       env: process.env
     }
     console.log(cp.execFileSync(np, [ip], options).toString())
-  } catch(err) {
+  } catch (err) {
     expect(err).toBeInstanceOf(Error)
   }
-
 })
 
 test('test bump invalid', () => {
@@ -83,9 +109,9 @@ test('test bump invalid', () => {
       env: process.env
     }
     console.log(cp.execFileSync(np, [ip], options).toString())
-  } catch(err) {
+  } catch (err) {
     console.log(err)
     expect(err).toBeDefined
   }
-
 })
+*/

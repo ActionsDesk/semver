@@ -6,25 +6,25 @@ import {SemverInputs} from './version-inputs'
  * Helper to get all the inputs for the action
  */
 export function getInputs(): SemverInputs {
-  const bump = core.getInput(Inputs.Bump, {required: true})
-  const pre = core.getInput(Inputs.Pre)
+  const bump: Bumps = core.getInput(Inputs.Bump, {required: true}) as Bumps
+  const prelabel = core.getInput(Inputs.Prelabel)
   const initialVersion = core.getInput(Inputs.InitialVersion)
   core.debug(`Initial version ${initialVersion}`)
-  if (bump == null) {
-    core.setFailed(
-      `Testing ${
-        Inputs.Pre
-      } input. Provided: ${pre}. Available options: ${Object.keys(Bumps)}`
-    )
-  }
 
   const inputs = {
     bump,
-    pre,
-    initialVersion: initialVersion ? initialVersion : '1.0.0'
+    prelabel,
+    initialVersion: initialVersion ? initialVersion : '0.1.0'
   } as SemverInputs
 
   /**
+     if (bump == null) {
+    core.setFailed(
+      `Testing ${
+        Inputs.Prelabel
+      } input. Provided: ${pre}. Available options: ${Object.keys(Bumps)}`
+    )
+  }
    * const retentionDaysStr = core.getInput(Inputs.RetentionDays)
     if (retentionDaysStr) {
        inputs.retentionDays = parseInt(retentionDaysStr)

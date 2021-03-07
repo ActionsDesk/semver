@@ -1,15 +1,16 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as inputHelper from './input-helper'
-import { Bumps } from './constants'
+import {Semver} from './Semver'
 
 async function run(): Promise<void> {
   try {
     let isFirstRelease = false
     const semverInputs = inputHelper.getInputs()
     core.debug(`Bump ${semverInputs.bump}`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    core.debug(`Pre ${semverInputs.pre}`)
+    core.debug(`Prelabel ${semverInputs.prelabel}`)
     core.debug(`InitialVersion ${semverInputs.initialVersion}`)
+
     const token = core.getInput('github_token', {required: true})
     const octokit = github.getOctokit(token)
     let release = {
@@ -37,35 +38,20 @@ async function run(): Promise<void> {
       }
     }
 
-    let newTag = semverInputs.initialVersion
-    if (!isFirstRelease) {
-      const parts = release.data.tag_name.split('.').map(s => parseInt(s))
-      core.debug(`Parts are ${parts}`)
-
-      switch (semverInputs.bump) {
-        case Bumps.major:
-          ++parts[0]
-          parts[1] = 0
-          parts[2] = 0
-          break
-        case Bumps.minor:
-          ++parts[1]
-          parts[2] = 0
-          break
-        case Bumps.patch:
-          ++parts[2]
-          break
-        default:
-          throw new Error(`Invalid Bump ${semverInputs.bump}`)
-      }
-      newTag = parts.join('.')
-    }
-
-    release = await octokit.repos.createRelease({
-      repo: github.context.repo.repo,
-      owner: github.context.repo.owner,
-      tag_name: newTag
-    })
+    const semver = new Semver(
+      release.data.tag_name,
+      isFirstRelease,
+      semverInputs.bump,
+      semverInputs.prelabel
+    )
+    core.debug(`Semver is ${semver}`)
+    const newTag = semver.getNextVersion()
+    core.debug(`new tag = ${newTag}`)
+    // release = await octokit.repos.createRelease({
+    //   repo: github.context.repo.repo,
+    //   owner: github.context.repo.owner,
+    //   tag_name: newTag
+    // })
     core.debug(release.data.tag_name)
 
     core.setOutput('release', release.data.tag_name)

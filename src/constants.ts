@@ -1,6 +1,6 @@
 export enum Inputs {
   Bump = 'bump',
-  Pre = 'pre',
+  Prelabel = 'prelabel',
   InitialVersion = 'initial_version'
 }
 
@@ -10,7 +10,8 @@ export enum Outputs {
 
 export enum Bumps {
   major = 'major',
-  minor = 'minor', 
+  minor = 'minor',
   patch = 'patch',
+  pre = 'pre',
   final = 'final'
 }

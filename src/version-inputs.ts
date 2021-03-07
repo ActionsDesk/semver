@@ -12,18 +12,18 @@ export interface SemverInputs {
 
   /**
    * Optional. When bumping, bump to a prerelease (e.g. rc or alpha), or bump an existing prerelease.
-   * If present, and the version is already a prerelease matching this value, its number is bumped. 
-   * If the version is already a prerelease of another type, (e.g. alpha vs. beta), the type is switched 
-   * and the prerelease version is reset to 1. If the version is not already a pre-release, 
+   * If present, and the version is already a prerelease matching this value, its number is bumped.
+   * If the version is already a prerelease of another type, (e.g. alpha vs. beta), the type is switched
+   * and the prerelease version is reset to 1. If the version is not already a pre-release,
    * then pre is added, starting at 1.
    *
-   * The value of pre can be anything you like; the value will be pre-pended (hah) to a numeric value. 
+   * The value of pre can be anything you like; the value will be pre-pended (hah) to a numeric value.
    * For example,
-   * pre: build will result in a semver of x.y.z-build.<number>, 
-   * pre: alpha becomes x.y.z-alpha.<number>, 
+   * pre: build will result in a semver of x.y.z-build.<number>,
+   * pre: alpha becomes x.y.z-alpha.<number>,
    * and pre: my-preferred-naming-convention becomes x.y.z-my-preferred-naming-convention.<number>
    */
-  pre: string
+  prelabel: string
 
   /**
    * The version number to use when , i.e. when there are no existing releases
