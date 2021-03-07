@@ -1,8 +1,11 @@
 # Semver action
 
-This is a **GitHub Action** for creating GitHub releases using [**Semantic versioning**](https://semver.org)  
-It does not use a backing store for storing the release numbers because that is in the `release tag` of the previous release.
-This action modelled after [Concourse Semver resource](https://github.com/concourse/semver-resource) used in [Concourse pipelines](https://concourse-ci.org/).
+This is a **GitHub Action** for creating releases using [**Semantic versioning**](https://semver.org).
+
+It automatically increments the version number from the previous latest release using the [bumping semantics shown below](#how-it-works).
+
+
+This action modelled after [Concourse Semver resource](https://github.com/concourse/semver-resource) which is used in [Concourse pipelines](https://concourse-ci.org/).
 
 ## Table of Contents
 
