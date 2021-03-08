@@ -1,18 +1,22 @@
 import * as core from '@actions/core'
-import {Inputs, Bumps} from './constants'
+import {Inputs, Bumps, PreRelease} from './constants'
 import {SemverInputs} from './version-inputs'
 
 /**
  * Helper to get all the inputs for the action
  */
 export function getInputs(): SemverInputs {
-  const bump: Bumps = core.getInput(Inputs.Bump, {required: true}) as Bumps
+  const bump: Bumps = core.getInput(Inputs.Bump) as Bumps
+  const preRelease = core.getInput(Inputs.PreRelease) as PreRelease
+  //const preReleaseStr = core.getInput(Inputs.PreRelease)
+  //const preRelease: PreRelease = parseInt(preReleaseStr) as PreRelease
   const prelabel = core.getInput(Inputs.Prelabel)
   const initialVersion = core.getInput(Inputs.InitialVersion)
   core.debug(`Initial version ${initialVersion}`)
 
   const inputs = {
     bump,
+    preRelease,
     prelabel,
     initialVersion: initialVersion ? initialVersion : '0.1.0'
   } as SemverInputs

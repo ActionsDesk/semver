@@ -8,6 +8,7 @@ async function run(): Promise<void> {
     let isFirstRelease = false
     const semverInputs = inputHelper.getInputs()
     core.debug(`Bump ${semverInputs.bump}`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    core.debug(`PreRelease ${semverInputs.preRelease}`)
     core.debug(`Prelabel ${semverInputs.prelabel}`)
     core.debug(`InitialVersion ${semverInputs.initialVersion}`)
 
@@ -42,6 +43,7 @@ async function run(): Promise<void> {
       release.data.tag_name,
       isFirstRelease,
       semverInputs.bump,
+      semverInputs.preRelease,
       semverInputs.prelabel
     )
     core.debug(`Semver is ${semver}`)

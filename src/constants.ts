@@ -1,11 +1,24 @@
 export enum Inputs {
   Bump = 'bump',
   Prelabel = 'prelabel',
-  InitialVersion = 'initial_version'
+  InitialVersion = 'initial_version',
+  PreRelease = 'prerelease'
 }
 
 export enum Outputs {
   Release = 'release'
+}
+/*
+export enum PreRelease {
+  none = 0,
+  withBuildNumber,
+  withoutBuildNumber
+}
+
+*/
+export enum PreRelease {
+  withBuildNumber = 'withBuildNumber',
+  withoutBuildNumber = 'withOutBuildNumber'
 }
 
 export enum Bumps {

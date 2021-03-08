@@ -8,17 +8,24 @@ require('./sourcemap-register.js');module.exports =
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Bumps = exports.Outputs = exports.Inputs = void 0;
+exports.Bumps = exports.PreRelease = exports.Outputs = exports.Inputs = void 0;
 var Inputs;
 (function (Inputs) {
     Inputs["Bump"] = "bump";
     Inputs["Prelabel"] = "prelabel";
     Inputs["InitialVersion"] = "initial_version";
+    Inputs["PreRelease"] = "prerelease";
 })(Inputs = exports.Inputs || (exports.Inputs = {}));
 var Outputs;
 (function (Outputs) {
     Outputs["Release"] = "release";
 })(Outputs = exports.Outputs || (exports.Outputs = {}));
+var PreRelease;
+(function (PreRelease) {
+    PreRelease[PreRelease["None"] = 0] = "None";
+    PreRelease[PreRelease["WithBuildNumber"] = 1] = "WithBuildNumber";
+    PreRelease[PreRelease["WithoutBuildNumber"] = 2] = "WithoutBuildNumber";
+})(PreRelease = exports.PreRelease || (exports.PreRelease = {}));
 var Bumps;
 (function (Bumps) {
     Bumps["major"] = "major";
@@ -26,6 +33,7 @@ var Bumps;
     Bumps["patch"] = "patch";
     Bumps["pre"] = "pre";
     Bumps["final"] = "final";
+    Bumps["none"] = "none";
 })(Bumps = exports.Bumps || (exports.Bumps = {}));
 
 
@@ -64,11 +72,14 @@ const constants_1 = __webpack_require__(105);
  */
 function getInputs() {
     const bump = core.getInput(constants_1.Inputs.Bump, { required: true });
+    const preReleaseStr = core.getInput(constants_1.Inputs.PreRelease);
+    const preRelease = parseInt(preReleaseStr ? preReleaseStr : '0');
     const prelabel = core.getInput(constants_1.Inputs.Prelabel);
     const initialVersion = core.getInput(constants_1.Inputs.InitialVersion);
     core.debug(`Initial version ${initialVersion}`);
     const inputs = {
         bump,
+        preRelease,
         prelabel,
         initialVersion: initialVersion ? initialVersion : '0.1.0'
     };
@@ -139,6 +150,7 @@ function run() {
             let isFirstRelease = false;
             const semverInputs = inputHelper.getInputs();
             core.debug(`Bump ${semverInputs.bump}`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+            core.debug(`PreRelease ${semverInputs.preRelease}`);
             core.debug(`Prelabel ${semverInputs.prelabel}`);
             core.debug(`InitialVersion ${semverInputs.initialVersion}`);
             const token = core.getInput('github_token', { required: true });
@@ -166,7 +178,7 @@ function run() {
                     };
                 }
             }
-            const semver = new semver_1.Semver(release.data.tag_name, isFirstRelease, semverInputs.bump, semverInputs.prelabel);
+            const semver = new semver_1.Semver(release.data.tag_name, isFirstRelease, semverInputs.bump, semverInputs.preRelease, semverInputs.prelabel);
             core.debug(`Semver is ${semver}`);
             const newTag = semver.getNextVersion();
             core.debug(`new tag = ${newTag}`);
@@ -217,10 +229,14 @@ exports.Semver = void 0;
 const constants_1 = __webpack_require__(105);
 const core = __importStar(__webpack_require__(186));
 class Semver {
-    constructor(currentVersion, isFirstRelease, bump, prelabel) {
+    constructor(currentVersion, isFirstRelease, bump, preRelease, prelabel) {
+        if (typeof bump === 'undefined' && typeof preRelease === 'undefined') {
+            throw Error('Invalid Semver. At least one of Bump or PreRelease has to be defined');
+        }
         this.prelabel = 'alpha';
         this.currentVersion = currentVersion;
-        this.bump = bump;
+        this.bump = bump ? bump : constants_1.Bumps.none;
+        this.preRelease = preRelease ? preRelease : constants_1.PreRelease.None;
         if (prelabel) {
             this.prelabel = prelabel;
         }
@@ -260,7 +276,20 @@ class Semver {
                     }
                     prebuild = [];
                     break;
-                case constants_1.Bumps.pre:
+                // case Bumps.pre:
+                //   core.debug(`Prebuild is ${prebuild}`)
+                //   if (prebuild.length === 2 && prebuild[0] === this.prelabel) {
+                //     prebuild[1] = (parseInt(prebuild[1]) + 1).toString()
+                //   } else {
+                //     prebuild[0] = this.prelabel
+                //     prebuild[1] = '1'
+                //   }
+                //   break
+                default:
+                    throw new Error(`Invalid Bump ${this.bump}`);
+            }
+            switch (this.preRelease) {
+                case constants_1.PreRelease.WithBuildNumber:
                     core.debug(`Prebuild is ${prebuild}`);
                     if (prebuild.length === 2 && prebuild[0] === this.prelabel) {
                         prebuild[1] = (parseInt(prebuild[1]) + 1).toString();
@@ -270,10 +299,8 @@ class Semver {
                         prebuild[1] = '1';
                     }
                     break;
-                default:
-                    throw new Error(`Invalid Bump ${this.bump}`);
             }
-            return this.bump === constants_1.Bumps.pre
+            return this.preRelease
                 ? `${parts.join('.')}-${prebuild.join('.')}`
                 : `${parts.join('.')}`;
         }
