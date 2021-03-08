@@ -2,7 +2,7 @@
 
 This is a **GitHub Action** for creating releases using [**Semantic versioning**](https://semver.org).
 
-It automatically increments the version number from the previous latest release using the [bumping semantics shown below](#how-it-works).
+It automatically increments the version number from the latest release using the [bumping semantics shown below](#how-it-works).
 
 This action modelled after [Concourse Semver resource](https://github.com/concourse/semver-resource) which is used in [Concourse pipelines](https://concourse-ci.org/).
 
@@ -29,10 +29,10 @@ The action takes the following inputs:
   - *major*: Create a release after bumping the major version. e.g. 1.0.0 -> 2.0.0.
   - *minor*: Create a release after bumping the minor version. e.g. 0.1.0 -> 0.2.0.
   - *patch*: Create a release after bumping the patch version. e.g. 0.1.0 -> 0.1.2.
-  - *final*: Promote a release to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.
-  - *pre*: Create a release as a pre-release. e.g. the version e.g. 0.1.0 > 0.1.0-alpha.1; 0.1.1-alpha.1 -> 0.1.1-alpha.2
+  - *final*: Promote a pre-release release to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.
   
-- **prerelease**: Denotes a pre-release. This could be combined with **bump** to increase the `maior|minor|patch` version.  When this option is given the **prelabel** value value will be added by appending a hyphen and a `dot` separated **build number** immediately following the patch version. When bumping to a pre-release, if the previous version is already a pre-release, it would bump the **build number**. If it is a new pre-release the **build number** would default at `1`. If the version is a prerelease of another type, (e.g. **prelabel** is `alpha` vs. `beta`), the type is switched and the prerelease version is reset to 1. If the version is not already a pre-release, then **bump** is required and **prelable** is appended using the semantics above, starting at 1.
+- **prerelease**: Denotes a pre-release. When this option is given the **prelabel** value value will be added by appending a hyphen and a `dot` separated **build number** immediately following the patch version. When bumping to a **prerelease**, if the previous version is already a **prerelease**, it would bump the **build number**.  
+If it is a new **prerelease** the **build number** would default at `1`. If the version is a **prerelease** of another type, (e.g. **prelabel** is `alpha` vs. `beta`), the type is switched and the **prerelease** **build number** is reset to 1. If the version is not already a **prerelease**, then **bump** is required because it is assumed that the current release is a **final release**.
   
   **required**: false  
 
@@ -40,7 +40,7 @@ The action takes the following inputs:
   - *withBuildNumber*: Create a pre-release release with a `dot` separated **build number** immediately following **prelable** e.g. With `minor` bumping  e.g. 1.0.0 -> 1.1.0-alpha.1
   - *withOutBuildNumber*: Create a pre-release release without the **build number**. e.g. 1.0.0 -> 1.1.0-alpha
 
-- **prelabel**: Label to be used for pre-release tags. The value can be any string. Good examples are `alpha`, `beta`, `rc`, etc.
+- **prelabel**: Label to be used for **prerelease** tags. The value can be any string. Good examples are `alpha`, `beta`, `rc`, etc.
   
   ​**required**: false  
   **default**: 'alpha'
