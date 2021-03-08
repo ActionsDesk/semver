@@ -79,7 +79,7 @@ test('Semver 0.1.0 PreRelease.WithBuildNumber test', () => {
   expect(semver.getNextVersion()).toBe('0.1.0-alpha.1')
 })
 
-test('Semver 0.1.0-rc.3 PreRelease.WithBuildNumber test', () => {
+test('Semver 0.4.3-rc.3 PreRelease.WithBuildNumber test', () => {
   const semver = new Semver(
     '0.4.3-rc.3',
     false,
@@ -87,7 +87,17 @@ test('Semver 0.1.0-rc.3 PreRelease.WithBuildNumber test', () => {
     PreRelease.withBuildNumber,
     'rc'
   )
-  expect(semver.getNextVersion()).toBe('0.1.0-rc.4')
+  expect(semver.getNextVersion()).toBe('0.4.3-rc.4')
+})
+
+test('Semver 0.4.3-rc.3 PreRelease.WithBuildNumber prelable=alpha test', () => {
+  const semver = new Semver(
+    '0.4.3-rc.3',
+    false,
+    undefined,
+    PreRelease.withBuildNumber
+  )
+  expect(semver.getNextVersion()).toBe('0.4.3-alpha.1')
 })
 
 test('Semver 0.1.0 Bumps.major PreRelease.WithBuildNumber test', () => {
