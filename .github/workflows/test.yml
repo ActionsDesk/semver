@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          bump: patch
+  #        bump: patch
           prerelease: withBuildNumber
           prelabel: rc
 
