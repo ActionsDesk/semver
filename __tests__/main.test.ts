@@ -13,9 +13,9 @@ beforeAll(() => {
 })
 
 beforeEach(() => {
-  delete process.env['INPUT_BUMP'] 
+  delete process.env['INPUT_BUMP']
   delete process.env['INPUT_INITIAL_VERSION']
-  delete process.env['INPUT_PRERELEASE'] 
+  delete process.env['INPUT_PRERELEASE']
 })
 
 test('throws invalid number', async () => {
@@ -60,7 +60,7 @@ test('Semver 0.1.0 bump=pre firstRelease test', () => {
 })
 
 test('Semver 0.1.0 bump=major firstRelease test', () => {
-  const semver = new Semver('0.1.0', true )
+  const semver = new Semver('0.1.0', true)
   expect(semver.getNextVersion()).toBe('0.1.0')
 })
 
@@ -142,11 +142,7 @@ test('Semver 0.1.0-alpha.1 Bumps.final PreRelease.WithBuildNumber label=beta tes
 })
 
 test('Semver 0.1.0-alpha.1 Bumps.Final', () => {
-  const semver = new Semver(
-    '0.1.0-alpha.1',
-    false,
-    Bumps.final
-  )
+  const semver = new Semver('0.1.0-alpha.1', false, Bumps.final)
   expect(semver.getNextVersion()).toBe('0.1.0')
 })
 

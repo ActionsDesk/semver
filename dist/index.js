@@ -20,11 +20,18 @@ var Outputs;
 (function (Outputs) {
     Outputs["Release"] = "release";
 })(Outputs = exports.Outputs || (exports.Outputs = {}));
+/*
+export enum PreRelease {
+  none = 0,
+  withBuildNumber,
+  withoutBuildNumber
+}
+
+*/
 var PreRelease;
 (function (PreRelease) {
-    PreRelease[PreRelease["None"] = 0] = "None";
-    PreRelease[PreRelease["WithBuildNumber"] = 1] = "WithBuildNumber";
-    PreRelease[PreRelease["WithoutBuildNumber"] = 2] = "WithoutBuildNumber";
+    PreRelease["withBuildNumber"] = "withBuildNumber";
+    PreRelease["withoutBuildNumber"] = "withOutBuildNumber";
 })(PreRelease = exports.PreRelease || (exports.PreRelease = {}));
 var Bumps;
 (function (Bumps) {
@@ -33,7 +40,6 @@ var Bumps;
     Bumps["patch"] = "patch";
     Bumps["pre"] = "pre";
     Bumps["final"] = "final";
-    Bumps["none"] = "none";
 })(Bumps = exports.Bumps || (exports.Bumps = {}));
 
 
@@ -71,9 +77,10 @@ const constants_1 = __webpack_require__(105);
  * Helper to get all the inputs for the action
  */
 function getInputs() {
-    const bump = core.getInput(constants_1.Inputs.Bump, { required: true });
-    const preReleaseStr = core.getInput(constants_1.Inputs.PreRelease);
-    const preRelease = parseInt(preReleaseStr ? preReleaseStr : '0');
+    const bump = core.getInput(constants_1.Inputs.Bump);
+    const preRelease = core.getInput(constants_1.Inputs.PreRelease);
+    //const preReleaseStr = core.getInput(Inputs.PreRelease)
+    //const preRelease: PreRelease = parseInt(preReleaseStr) as PreRelease
     const prelabel = core.getInput(constants_1.Inputs.Prelabel);
     const initialVersion = core.getInput(constants_1.Inputs.InitialVersion);
     core.debug(`Initial version ${initialVersion}`);
@@ -230,16 +237,17 @@ const constants_1 = __webpack_require__(105);
 const core = __importStar(__webpack_require__(186));
 class Semver {
     constructor(currentVersion, isFirstRelease, bump, preRelease, prelabel) {
-        if (typeof bump === 'undefined' && typeof preRelease === 'undefined') {
-            throw Error('Invalid Semver. At least one of Bump or PreRelease has to be defined');
+        if (!isFirstRelease &&
+            typeof bump === 'undefined' &&
+            typeof preRelease === 'undefined') {
+            throw Error('Invalid Semver Operation: At least one of Bump or PreRelease has to be defined or IsFirstRelease must be true');
         }
-        this.prelabel = 'alpha';
         this.currentVersion = currentVersion;
-        this.bump = bump ? bump : constants_1.Bumps.none;
-        this.preRelease = preRelease ? preRelease : constants_1.PreRelease.None;
-        if (prelabel) {
-            this.prelabel = prelabel;
+        this.bump = bump;
+        if (this.bump !== constants_1.Bumps.final) {
+            this.preRelease = preRelease;
         }
+        this.prelabel = prelabel ? prelabel : 'alpha';
         this.isFirstRelease = isFirstRelease;
     }
     getNextVersion() {
@@ -250,10 +258,14 @@ class Semver {
         core.debug(`Version Parts are ${versionparts}`);
         if (versionparts != null) {
             const parts = versionparts.slice(0, 3).map(s => parseInt(s));
-            let prebuild = versionparts[3]
+            core.debug(`Parts are ${parts}`);
+            if (this.bump === constants_1.Bumps.final && !versionparts[3]) {
+                throw Error('Invalid Semver Operation: Cannot do Bump Final and not have the previous release as a PreRelease');
+            }
+            const prebuild = versionparts[3]
                 ? versionparts[3].split('.')
                 : [this.prelabel, '0'];
-            core.debug(`Parts are ${parts}`);
+            core.debug(`prebuild is ${prebuild}`);
             switch (this.bump) {
                 case constants_1.Bumps.major:
                     if (!this.isFirstRelease) {
@@ -261,38 +273,33 @@ class Semver {
                         parts[1] = 0;
                         parts[2] = 0;
                     }
-                    prebuild = [];
+                    //prebuild = []
                     break;
                 case constants_1.Bumps.minor:
                     if (!this.isFirstRelease) {
                         ++parts[1];
                         parts[2] = 0;
                     }
-                    prebuild = [];
+                    //prebuild = []
                     break;
                 case constants_1.Bumps.patch:
                     if (!this.isFirstRelease) {
                         ++parts[2];
                     }
-                    prebuild = [];
+                    //prebuild = []
                     break;
-                // case Bumps.pre:
-                //   core.debug(`Prebuild is ${prebuild}`)
-                //   if (prebuild.length === 2 && prebuild[0] === this.prelabel) {
-                //     prebuild[1] = (parseInt(prebuild[1]) + 1).toString()
-                //   } else {
-                //     prebuild[0] = this.prelabel
-                //     prebuild[1] = '1'
-                //   }
-                //   break
+                case constants_1.Bumps.final:
+                    break;
                 default:
-                    throw new Error(`Invalid Bump ${this.bump}`);
+                    if (!this.preRelease && !this.isFirstRelease) {
+                        throw new Error(`Invalid Bump ${this.bump}`);
+                    }
             }
             switch (this.preRelease) {
-                case constants_1.PreRelease.WithBuildNumber:
+                case constants_1.PreRelease.withBuildNumber:
                     core.debug(`Prebuild is ${prebuild}`);
                     if (prebuild.length === 2 && prebuild[0] === this.prelabel) {
-                        prebuild[1] = (parseInt(prebuild[1]) + 1).toString();
+                        prebuild[1] = (parseInt(prebuild[1] ? prebuild[1] : '0') + 1).toString();
                     }
                     else {
                         prebuild[0] = this.prelabel;
