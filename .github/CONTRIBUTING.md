@@ -54,6 +54,6 @@ If you are the current maintainer of this action:
 - [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
 - [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
 
-[pulls]: https://github.com/decyjphr-actions/semver/pulls
+[pulls]: https://github.com/actionsdesk/semver/pulls
 [pr]: https://github.com/github/github-demo-stack/compare
 [fork]: https://github.com/github/github-demo-stack/fork

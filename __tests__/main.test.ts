@@ -9,7 +9,7 @@ import * as inputHelper from '../src/input-helper'
 
 beforeAll(() => {
   process.env['INPUT_GITHUB_TOKEN'] = 'abc'
-  process.env['GITHUB_REPOSITORY'] = 'decyjphr-actions/semver'
+  process.env['GITHUB_REPOSITORY'] = 'actionsdesk/semver'
 })
 
 beforeEach(() => {
@@ -49,24 +49,45 @@ test('Input Helper test prerelease', () => {
   expect(semverInputs.preRelease).toBe(PreRelease.withBuildNumber)
 })
 
-test('Semver 0.1.0 bump=pre firstRelease test', () => {
+test('Semver 0.1.0 firstRelease test', () => {
+  const semver = new Semver('0.1.0', true)
+  expect(semver.getNextVersion()).toBe('0.1.0')
+})
+
+test('Semver 0.1.0 firstRelease PreRelease.withBuildNumber test', () => {
   const semver = new Semver(
     '0.1.0',
     true,
-    Bumps.patch,
+    undefined,
     PreRelease.withBuildNumber
   )
   expect(semver.getNextVersion()).toBe('0.1.0-alpha.1')
 })
 
 test('Semver 0.1.0 bump=major firstRelease test', () => {
-  const semver = new Semver('0.1.0', true)
+  const semver = new Semver('0.1.0', true, Bumps.major)
   expect(semver.getNextVersion()).toBe('0.1.0')
 })
 
-test('Semver 0.1.0 bump=major firstRelease test', () => {
-  const semver = new Semver('0.1.0', true, Bumps.major)
-  expect(semver.getNextVersion()).toBe('0.1.0')
+test('Semver 0.1.0 PreRelease.WithBuildNumber test', () => {
+  const semver = new Semver(
+    '0.1.0',
+    false,
+    undefined,
+    PreRelease.withBuildNumber
+  )
+  expect(semver.getNextVersion()).toBe('0.1.0-alpha.1')
+})
+
+test('Semver 0.1.0-rc.3 PreRelease.WithBuildNumber test', () => {
+  const semver = new Semver(
+    '0.4.3-rc.3',
+    false,
+    undefined,
+    PreRelease.withBuildNumber,
+    'rc'
+  )
+  expect(semver.getNextVersion()).toBe('0.1.0-rc.4')
 })
 
 test('Semver 0.1.0 Bumps.major PreRelease.WithBuildNumber test', () => {

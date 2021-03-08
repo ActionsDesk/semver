@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: decyjphr-actions/semver
+    - uses: actionsdesk/semver
       with:
         bump: patch
         prerelease: withBuildNumber
@@ -95,10 +95,10 @@ jobs:
 
 ## How to contribute
 
-If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/decyjphr-actions/semver/blob/master/.github/CONTRIBUTING.md)
+If you would like to help contribute to this **GitHub** Action, please see [CONTRIBUTING](https://github.com/actionsdesk/semver/blob/master/.github/CONTRIBUTING.md)
 
 ---
 
 ### License
 
-- [MIT License](https://github.com/decyjphr-actions/workflow-dispatch/blob/master/LICENSE)
+- [MIT License](https://github.com/actionsdesk/workflow-dispatch/blob/master/LICENSE)

@@ -13,7 +13,6 @@ inputs:
       patch: Bump the patch version number, e.g. 0.0.1 -> 0.0.2.\n
       final: Promote the version to a final version, e.g. 1.0.0-rc.1 -> 1.0.0.'
     required: false
-    default: 'minor'
   prerelease: #Denotes a pre-release
     description: 'Is this a pre-release. \n
       Pre-release are labelled with a label and build number e.g. 0.0.1 -> 0.0.2-<label>.<build>\n
