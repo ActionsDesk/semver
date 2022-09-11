@@ -40,4 +40,9 @@ export interface SemverInputs {
    * present in the repository.
    */
   initialVersion: string
+
+  /**
+   * commitish
+   */
+  commitish: string
 }

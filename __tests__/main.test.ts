@@ -38,6 +38,18 @@ test('Input Helper test', () => {
   expect(semverInputs.bump).toBe('major')
   expect(semverInputs.initialVersion).toBe('0.0.1')
   expect(semverInputs.preRelease).toBe('')
+  expect(semverInputs.commitish).toBe('')
+})
+
+test('Input Helper commitish', () => {
+  process.env['INPUT_BUMP'] = 'major'
+  process.env['INPUT_INITIAL_VERSION'] = '0.0.1'
+  process.env['INPUT_COMMITISH'] = 'feature1'
+  const semverInputs = inputHelper.getInputs()
+  expect(semverInputs.bump).toBe('major')
+  expect(semverInputs.initialVersion).toBe('0.0.1')
+  expect(semverInputs.preRelease).toBe('')
+  expect(semverInputs.commitish).toBe('feature1')
 })
 
 test('Input Helper test prerelease', () => {

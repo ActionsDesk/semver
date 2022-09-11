@@ -12,13 +12,14 @@ export function getInputs(): SemverInputs {
   //const preRelease: PreRelease = parseInt(preReleaseStr) as PreRelease
   const prelabel = core.getInput(Inputs.Prelabel)
   const initialVersion = core.getInput(Inputs.InitialVersion)
-  core.debug(`Initial version ${initialVersion}`)
+  const commitish = core.getInput(Inputs.Commitish)
 
   const inputs = {
     bump,
     preRelease,
     prelabel,
-    initialVersion: initialVersion ? initialVersion : '0.1.0'
+    initialVersion: initialVersion ? initialVersion : '0.1.0',
+    commitish
   } as SemverInputs
 
   /**

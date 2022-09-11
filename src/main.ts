@@ -11,6 +11,7 @@ async function run(): Promise<void> {
     core.debug(`PreRelease ${semverInputs.preRelease}`)
     core.debug(`Prelabel ${semverInputs.prelabel}`)
     core.debug(`InitialVersion ${semverInputs.initialVersion}`)
+    core.debug(`Commitish ${semverInputs.commitish}`)
 
     const token = core.getInput('github_token', {required: true})
     const octokit = github.getOctokit(token)
@@ -49,15 +50,20 @@ async function run(): Promise<void> {
     core.debug(`Semver is ${semver}`)
     const newTag = semver.getNextVersion()
     core.debug(`new tag = ${newTag}`)
-    release = await octokit.repos.createRelease({
+    let params = {
       repo: github.context.repo.repo,
       owner: github.context.repo.owner,
       tag_name: newTag
-    })
+    }
+    if (semverInputs.commitish !== undefined && semverInputs.commitish !== '') {
+      params = Object.assign(params, {commitish: semverInputs.commitish})
+    }
+    release = await octokit.repos.createRelease(params)
     core.debug(release.data.tag_name)
     core.setOutput('release', release.data.tag_name)
-  } catch (error) {
-    core.setFailed(error.message)
+  } catch (_e) {
+    const e: Error = _e as Error
+    core.setFailed(e.message)
   }
 }
 

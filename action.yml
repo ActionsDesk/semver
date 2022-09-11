@@ -27,6 +27,9 @@ inputs:
   initial_version:
     description: 'If there is no current version, the bump will be based on initial_version or 0.1.0'
     required: false
+  commitish:
+    description: 'Can be any branch or commit SHA. Default is `default` branch'
+    required: false
 outputs:
   release: # output will be available to future steps
     description: 'The release that was created'

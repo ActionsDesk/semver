@@ -15,6 +15,7 @@ var Inputs;
     Inputs["Prelabel"] = "prelabel";
     Inputs["InitialVersion"] = "initial_version";
     Inputs["PreRelease"] = "prerelease";
+    Inputs["Commitish"] = "commitish";
 })(Inputs = exports.Inputs || (exports.Inputs = {}));
 var Outputs;
 (function (Outputs) {
@@ -83,12 +84,13 @@ function getInputs() {
     //const preRelease: PreRelease = parseInt(preReleaseStr) as PreRelease
     const prelabel = core.getInput(constants_1.Inputs.Prelabel);
     const initialVersion = core.getInput(constants_1.Inputs.InitialVersion);
-    core.debug(`Initial version ${initialVersion}`);
+    const commitish = core.getInput(constants_1.Inputs.Commitish);
     const inputs = {
         bump,
         preRelease,
         prelabel,
-        initialVersion: initialVersion ? initialVersion : '0.1.0'
+        initialVersion: initialVersion ? initialVersion : '0.1.0',
+        commitish
     };
     /**
        if (bump == null) {
@@ -160,6 +162,7 @@ function run() {
             core.debug(`PreRelease ${semverInputs.preRelease}`);
             core.debug(`Prelabel ${semverInputs.prelabel}`);
             core.debug(`InitialVersion ${semverInputs.initialVersion}`);
+            core.debug(`Commitish ${semverInputs.commitish}`);
             const token = core.getInput('github_token', { required: true });
             const octokit = github.getOctokit(token);
             let release = {
@@ -170,7 +173,7 @@ function run() {
             try {
                 release = yield octokit.repos.getLatestRelease({
                     repo: github.context.repo.repo,
-                    owner: github.context.repo.owner
+                    owner: github.context.repo.owner,
                 });
                 core.debug(release.data.tag_name);
             }
@@ -189,16 +192,21 @@ function run() {
             core.debug(`Semver is ${semver}`);
             const newTag = semver.getNextVersion();
             core.debug(`new tag = ${newTag}`);
-            release = yield octokit.repos.createRelease({
+            let params = {
                 repo: github.context.repo.repo,
                 owner: github.context.repo.owner,
                 tag_name: newTag
-            });
+            };
+            if (semverInputs.commitish !== undefined && semverInputs.commitish !== '') {
+                params = Object.assign(params, { commitish: semverInputs.commitish });
+            }
+            release = yield octokit.repos.createRelease(params);
             core.debug(release.data.tag_name);
             core.setOutput('release', release.data.tag_name);
         }
-        catch (error) {
-            core.setFailed(error.message);
+        catch (_e) {
+            const e = _e;
+            core.setFailed(e.message);
         }
     });
 }

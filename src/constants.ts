@@ -2,7 +2,8 @@ export enum Inputs {
   Bump = 'bump',
   Prelabel = 'prelabel',
   InitialVersion = 'initial_version',
-  PreRelease = 'prerelease'
+  PreRelease = 'prerelease',
+  Commitish = 'commitish'
 }
 
 export enum Outputs {
