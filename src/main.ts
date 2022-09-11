@@ -58,6 +58,7 @@ async function run(): Promise<void> {
     if (semverInputs.commitish !== undefined && semverInputs.commitish !== '') {
       params = Object.assign(params, {commitish: semverInputs.commitish})
     }
+    core.debug(`creating release with params ${JSON.stringify(params)}`)
     release = await octokit.repos.createRelease(params)
     core.debug(release.data.tag_name)
     core.setOutput('release', release.data.tag_name)

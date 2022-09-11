@@ -173,7 +173,7 @@ function run() {
             try {
                 release = yield octokit.repos.getLatestRelease({
                     repo: github.context.repo.repo,
-                    owner: github.context.repo.owner,
+                    owner: github.context.repo.owner
                 });
                 core.debug(release.data.tag_name);
             }
@@ -200,6 +200,7 @@ function run() {
             if (semverInputs.commitish !== undefined && semverInputs.commitish !== '') {
                 params = Object.assign(params, { commitish: semverInputs.commitish });
             }
+            core.debug(`creating release with params ${JSON.stringify(params)}`);
             release = yield octokit.repos.createRelease(params);
             core.debug(release.data.tag_name);
             core.setOutput('release', release.data.tag_name);
