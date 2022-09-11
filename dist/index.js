@@ -198,7 +198,7 @@ function run() {
                 tag_name: newTag
             };
             if (semverInputs.commitish !== undefined && semverInputs.commitish !== '') {
-                params = Object.assign(params, { commitish: semverInputs.commitish });
+                params = Object.assign(params, { target_commitish: semverInputs.commitish });
             }
             core.debug(`creating release with params ${JSON.stringify(params)}`);
             release = yield octokit.repos.createRelease(params);
