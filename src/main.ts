@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 import * as inputHelper from './input-helper'
 import {Semver} from './semver'
 
+
 async function run(): Promise<void> {
   try {
     let isFirstRelease = false
